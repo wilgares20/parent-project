@@ -1,0 +1,51 @@
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
+spring:
+  application:
+    name: user-service
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+    drop-first: true
+  session:
+    store-type: jdbc
+
+eureka:
+  client:
+    registry-fetch-interval-seconds: 5
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka/ # URL del servidor Eureka  instance:
+    preferIpAddress: true
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: "health,info,prometheus,configprops,env,loggers,sessions"
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+    configprops:
+      enabled: true
+    env:
+      enabled: true
+    loggers:
+      enabled: true
+    sessions:
+      enabled: true
+

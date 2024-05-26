@@ -1,0 +1,89 @@
+
+version: '3.3'
+
+services:
+  postgres:
+    image: postgres:latest
+    #    network_mode: bridge
+    container_name: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    restart: unless-stopped
+    networks:
+      - my-network
+
+  eureka-service:
+    build:
+      context: ./eureka-service
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - my-network
+    image: eureka-service:latest
+
+  gateway-server:
+    build:
+      context: ./gateway-server
+      dockerfile: Dockerfile
+    ports:
+      - "8777:8777"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-service:8761/eureka/
+    depends_on:
+      - eureka-service
+    networks:
+      - my-network
+    image: gateway_server:latest
+
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-service:8761/eureka/
+    depends_on:
+      - gateway-server
+      - eureka-service
+    networks:
+      - my-network
+    image: config_server:latest
+
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-service:8761/eureka/
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgresdb
+#      - SPRING_DATASOURCE_USERNAME=postgres
+#      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - config-server
+      - eureka-service
+      - gateway-server
+      - postgres
+    networks:
+      - my-network
+    image: user-service:latest
+
+
+networks:
+  my-network:
+    external: true
+
+volumes:
+  postgres-data:

@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    config:
+      uri: http://localhost:8888
+      name: service-user
+#      usado pra postgres en docker
+      profile: prod
+#      profile: dev  cambiar si solo es para h2 local
+      label: master
+
+
+

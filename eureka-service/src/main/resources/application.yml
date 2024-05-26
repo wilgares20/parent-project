@@ -1,0 +1,16 @@
+
+server:
+  port: 8761 # Puerto en el que se ejecutará el servidor Eureka
+  
+eureka:
+  client:
+    register-with-eureka: false   # Habilita el registro de las instancias en este servidor Eureka
+    fetch-registry: false   # Evita que esta instancia se registre en otros servidores Eureka
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+
+spring:
+  application:
+    name: eureka-service # Nombre de la aplicación Eureka
+
+

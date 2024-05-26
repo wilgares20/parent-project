@@ -1,0 +1,3 @@
+#spring:
+#  application:
+#    name: eureka-service # Nombre de la aplicación Eureka

@@ -1,0 +1,24 @@
+server:
+  port: 8777 # Configurar el puerto del servidor Zuul
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-service:8761/eureka/ # URL del servidor Eureka
+
+spring:
+  application:
+    name: gateway-server # Nombre de la aplicación Zuul
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/service/**
+
+#zuul:
+#  routes:
+#    users-service: # Nombre del microservicio que será roteado
+#      path: /api/users/** # Ruta que Zuul interceptará y redirigirá
+#      serviceId: crud # Nombre del servicio en Eureka
